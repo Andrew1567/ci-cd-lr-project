@@ -30,7 +30,14 @@ jobs:
           PR_TITLE="${{ github.event.pull_request.title }}"
           JOKE="${{ steps.joke.outputs.joke }}"
           
-          sed -i '//q' README.md
+        
+          awk '//{print;exit} {print}' README.md > temp.md
+          mv temp.md README.md
+          
+          if ! grep -q "" README.md; then
+            echo -e "\n" >> README.md
+          fi
+          
           echo -e "\n## Latest Release Info" >> README.md
           echo "- **Version:** $VERSION" >> README.md
           echo "- **PR Title:** $PR_TITLE" >> README.md
